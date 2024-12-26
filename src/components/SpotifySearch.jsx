@@ -13,6 +13,8 @@ function SpotifySearch() {
   const [showEmailError, setShowEmailError] = useState(false);
 
   useEffect(() => {
+    console.log("Client ID:", import.meta.env.VITE_SPOTIFY_CLIENT_ID);
+    console.log("Client Secret:", import.meta.env.VITE_SPOTIFY_CLIENT_SECRET);
     const getToken = async () => {
         // Change all process.env back to import.meta.env
         // For example:
