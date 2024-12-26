@@ -1,0 +1,17 @@
+{
+    "headers": [
+      {
+        "source": "/(.*)",
+        "headers": [
+          {
+            "key": "Content-Security-Policy",
+            "value": "frame-ancestors 'self' https://apolone.com https://*.gohighlevel.com"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "ALLOW-FROM https://apolone.com"
+          }
+        ]
+      }
+    ]
+  }
