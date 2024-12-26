@@ -13,13 +13,9 @@ function SpotifySearch() {
   const [showEmailError, setShowEmailError] = useState(false);
 
   useEffect(() => {
-    console.log("Client ID:", import.meta.env.VITE_SPOTIFY_CLIENT_ID);
-    console.log("Client Secret:", import.meta.env.VITE_SPOTIFY_CLIENT_SECRET);
     const getToken = async () => {
-        // Change all process.env back to import.meta.env
-        // For example:
-        const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-        const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
+      const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+      const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
       
       try {
         console.log('Attempting to get token...');
@@ -128,7 +124,7 @@ function SpotifySearch() {
 
     try {
       setIsSubmitting(true);
-      const webhookUrl = process.env.VITE_GHL_WEBHOOK_URL;
+      const webhookUrl = import.meta.env.VITE_GHL_WEBHOOK_URL;
       
       const response = await fetch(webhookUrl, {
         method: 'POST',
@@ -148,8 +144,7 @@ function SpotifySearch() {
       });
 
       if (response.ok) {
-        // Redirect after successful submission
-        window.location.href = process.env.VITE_REDIRECT_URL || 'https://apolone.com/boost-checkout-7235';
+        window.location.href = import.meta.env.VITE_REDIRECT_URL || 'https://apolone.com/boost-checkout-7235';
       } else {
         throw new Error('Failed to submit campaign');
       }
