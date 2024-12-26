@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Play } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 function SpotifySearch() {
   const [query, setQuery] = useState('');
@@ -157,107 +157,112 @@ function SpotifySearch() {
   };
 
   return (
-    <div className="w-full max-w-[520px] mx-auto p-2" style={{ minWidth: '320px', background: 'transparent' }}>
+    <div style={{ background: 'transparent' }}>
       {!selectedTrack ? (
-        <div>
-          {/* Search Box - Fixed position and full width */}
-          <div className="w-full bg-[#FFF7F7] rounded-2xl shadow-lg">
-            <div className="relative w-full">
-              <input
-                type="text"
-                value={query}
-                onChange={handleInputChange}
-                placeholder="Search track title or Spotify link"
-                className="w-full p-4 pl-12 rounded-2xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+        <div className="w-full max-w-[520px] mx-auto">
+          {/* Search Box - Fixed width and position */}
+          <div className="fixed-width-container" style={{ width: '100%', maxWidth: '520px', margin: '0 auto', padding: '0 16px' }}>
+            <div className="search-box bg-white rounded-2xl shadow-lg" style={{ width: '100%' }}>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={query}
+                  onChange={handleInputChange}
+                  placeholder="Search track title or Spotify link"
+                  className="w-full p-4 pl-12 rounded-2xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                  style={{ width: '100%', boxSizing: 'border-box' }}
+                />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+              </div>
             </div>
-          </div>
 
-          {/* Search Results - White background only for results */}
-          {results.length > 0 && (
-            <div className="mt-2 space-y-2">
-              {results.map((track) => (
-                <div 
-                  key={track.id}
-                  onClick={() => handleTrackSelect(track)}
-                  className="flex items-center p-3 bg-white rounded-xl hover:bg-gray-50 transition-colors cursor-pointer border border-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <img 
-                      src={track.album.images[0]?.url} 
-                      alt={track.album.name}
-                      className="w-12 h-12 rounded-lg object-cover"
-                    />
-                    <div>
-                      <div className="font-medium text-gray-900">{track.name}</div>
-                      <div className="text-sm text-gray-500">
-                        {track.artists.map(a => a.name).join(', ')}
+            {/* Search Results */}
+            {results.length > 0 && (
+              <div className="mt-2 space-y-2">
+                {results.map((track) => (
+                  <div 
+                    key={track.id}
+                    onClick={() => handleTrackSelect(track)}
+                    className="flex items-center p-3 bg-white rounded-xl hover:bg-gray-50 transition-colors cursor-pointer border border-gray-100"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src={track.album.images[0]?.url} 
+                        alt={track.album.name}
+                        className="w-12 h-12 rounded-lg object-cover"
+                      />
+                      <div>
+                        <div className="font-medium text-gray-900">{track.name}</div>
+                        <div className="text-sm text-gray-500">
+                          {track.artists.map(a => a.name).join(', ')}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl p-6 border border-gray-100">
-          <div className="flex flex-col items-center">
-            <img 
-              src={selectedTrack.album.images[0]?.url} 
-              alt={selectedTrack.album.name}
-              className="w-40 h-40 rounded-lg shadow-lg mb-4 object-cover"
-            />
-            <h2 className="text-xl font-bold text-center mb-2">{selectedTrack.name}</h2>
-            <p className="text-gray-600 text-center mb-4">
-              {selectedTrack.artists.map(a => a.name).join(', ')}
-            </p>
-            <p className="text-gray-500 text-sm mb-6 text-center">{selectedTrack.album.name}</p>
-            
-            {/* Email Input */}
-            <div className="w-full mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="email"
-                placeholder="example@domain.com"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (showEmailError) {
-                    validateEmail(e.target.value);
-                  }
-                }}
-                className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                  showEmailError && emailError ? 'border-red-500' : 'border-gray-200'
-                }`}
+        <div className="w-full max-w-[520px] mx-auto px-4">
+          <div className="bg-white rounded-xl p-6 border border-gray-100">
+            <div className="flex flex-col items-center">
+              <img 
+                src={selectedTrack.album.images[0]?.url} 
+                alt={selectedTrack.album.name}
+                className="w-40 h-40 rounded-lg shadow-lg mb-4 object-cover"
               />
-              {showEmailError && emailError && (
-                <p className="text-red-500 text-sm mt-1">{emailError}</p>
-              )}
-            </div>
+              <h2 className="text-xl font-bold text-center mb-2">{selectedTrack.name}</h2>
+              <p className="text-gray-600 text-center mb-4">
+                {selectedTrack.artists.map(a => a.name).join(', ')}
+              </p>
+              <p className="text-gray-500 text-sm mb-6 text-center">{selectedTrack.album.name}</p>
+              
+              {/* Email Input */}
+              <div className="w-full mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  placeholder="example@domain.com"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (showEmailError) {
+                      validateEmail(e.target.value);
+                    }
+                  }}
+                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                    showEmailError && emailError ? 'border-red-500' : 'border-gray-200'
+                  }`}
+                />
+                {showEmailError && emailError && (
+                  <p className="text-red-500 text-sm mt-1">{emailError}</p>
+                )}
+              </div>
 
-            <div className="flex gap-3 w-full">
-              <button
-                onClick={handleSubmitCampaign}
-                disabled={isSubmitting}
-                className="flex-1 py-3 bg-[#FF4D4D] text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-center"
-              >
-                {isSubmitting ? 'Submitting...' : 'Submit Campaign'}
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedTrack(null);
-                  setEmail('');
-                  setEmailError('');
-                  setShowEmailError(false);
-                }}
-                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-center"
-              >
-                Choose Different Song
-              </button>
+              <div className="flex gap-3 w-full">
+                <button
+                  onClick={handleSubmitCampaign}
+                  disabled={isSubmitting}
+                  className="flex-1 py-3 bg-[#FF4D4D] text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-center"
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit Campaign'}
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedTrack(null);
+                    setEmail('');
+                    setEmailError('');
+                    setShowEmailError(false);
+                  }}
+                  className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-center"
+                >
+                  Choose Different Song
+                </button>
+              </div>
             </div>
           </div>
         </div>
