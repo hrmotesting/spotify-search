@@ -14,8 +14,10 @@ function SpotifySearch() {
 
   useEffect(() => {
     const getToken = async () => {
-      const clientId = process.env.VITE_SPOTIFY_CLIENT_ID;
-      const clientSecret = process.env.VITE_SPOTIFY_CLIENT_SECRET;
+        // Change all process.env back to import.meta.env
+        // For example:
+        const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+        const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
       
       try {
         console.log('Attempting to get token...');
