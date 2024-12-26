@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Search, Play } from 'lucide-react';
 
 function SpotifySearch() {
-  // Previous state declarations remain the same
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -13,22 +12,10 @@ function SpotifySearch() {
   const [emailError, setEmailError] = useState('');
   const [showEmailError, setShowEmailError] = useState(false);
 
-  // Updated email validation
-  const validateEmail = (email) => {
-    const regex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-    const isValid = regex.test(email);
-    if (!isValid) {
-      setEmailError('Please enter a valid email (example@domain.com)');
-      return false;
-    }
-    return true;
-  };
-
-  // Keep existing token fetch useEffect and searchSpotify function
   useEffect(() => {
     const getToken = async () => {
-      const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-      const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
+      const clientId = process.env.VITE_SPOTIFY_CLIENT_ID;
+      const clientSecret = process.env.VITE_SPOTIFY_CLIENT_SECRET;
       
       try {
         console.log('Attempting to get token...');
@@ -62,7 +49,16 @@ function SpotifySearch() {
     getToken();
   }, []);
 
-  // Keep existing search functions
+  const validateEmail = (email) => {
+    const regex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    const isValid = regex.test(email);
+    if (!isValid) {
+      setEmailError('Please enter a valid email (example@domain.com)');
+      return false;
+    }
+    return true;
+  };
+
   const searchSpotify = async (searchQuery) => {
     if (!searchQuery.trim() || !token) {
       console.log('Search cancelled:', { hasQuery: !!searchQuery.trim(), hasToken: !!token });
@@ -114,7 +110,6 @@ function SpotifySearch() {
     setQuery('');
   };
 
-  // Updated submit function with redirect
   const handleSubmitCampaign = async () => {
     if (!selectedTrack || !email) {
       setShowEmailError(true);
@@ -129,7 +124,7 @@ function SpotifySearch() {
 
     try {
       setIsSubmitting(true);
-      const webhookUrl = import.meta.env.VITE_GHL_WEBHOOK_URL;
+      const webhookUrl = process.env.VITE_GHL_WEBHOOK_URL;
       
       const response = await fetch(webhookUrl, {
         method: 'POST',
@@ -148,13 +143,12 @@ function SpotifySearch() {
         })
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        // Redirect after successful submission
+        window.location.href = process.env.VITE_REDIRECT_URL || 'https://apolone.com/boost-checkout-7235';
+      } else {
         throw new Error('Failed to submit campaign');
       }
-
-      // Redirect after successful submission
-      window.location.href = "https://your-redirect-url.com"; // Replace with your actual redirect URL
-
     } catch (error) {
       console.error('Failed to submit to webhook:', error);
       alert('Failed to submit campaign. Please try again.');
@@ -163,13 +157,12 @@ function SpotifySearch() {
     }
   };
 
-  // Rest of the component remains the same until the email input section
   return (
-    <div className="w-full p-4">
+    <div className="w-full max-w-[520px] mx-auto px-2 sm:px-4" style={{ minWidth: '320px' }}>
       {!selectedTrack ? (
         <div>
-          {/* Search Box */}
-          <div className="bg-[#FFF7F7] rounded-2xl">
+          {/* Fixed-width Search Box */}
+          <div className="w-full bg-[#FFF7F7] rounded-2xl shadow-lg">
             <div className="relative">
               <input
                 type="text"
@@ -228,7 +221,7 @@ function SpotifySearch() {
             </p>
             <p className="text-gray-500 text-sm mb-6 text-center">{selectedTrack.album.name}</p>
             
-            {/* Updated Email Input with required asterisk */}
+            {/* Email Input */}
             <div className="w-full mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email <span className="text-red-500">*</span>
