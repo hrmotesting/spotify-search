@@ -157,12 +157,12 @@ function SpotifySearch() {
   };
 
   return (
-    <div className="w-full max-w-[520px] mx-auto px-2 sm:px-4" style={{ minWidth: '320px' }}>
+    <div className="w-full max-w-[520px] mx-auto p-2" style={{ minWidth: '320px', background: 'transparent' }}>
       {!selectedTrack ? (
         <div>
-          {/* Fixed-width Search Box */}
+          {/* Search Box - Fixed position and full width */}
           <div className="w-full bg-[#FFF7F7] rounded-2xl shadow-lg">
-            <div className="relative">
+            <div className="relative w-full">
               <input
                 type="text"
                 value={query}
@@ -174,14 +174,14 @@ function SpotifySearch() {
             </div>
           </div>
 
-          {/* Search Results */}
+          {/* Search Results - White background only for results */}
           {results.length > 0 && (
             <div className="mt-2 space-y-2">
               {results.map((track) => (
                 <div 
                   key={track.id}
                   onClick={() => handleTrackSelect(track)}
-                  className="flex items-center justify-between p-3 bg-white rounded-xl hover:bg-gray-50 transition-colors cursor-pointer border border-gray-100"
+                  className="flex items-center p-3 bg-white rounded-xl hover:bg-gray-50 transition-colors cursor-pointer border border-gray-100"
                 >
                   <div className="flex items-center gap-3">
                     <img 
@@ -196,11 +196,6 @@ function SpotifySearch() {
                       </div>
                     </div>
                   </div>
-                  <button 
-                    className="w-8 h-8 rounded-full bg-[#FF4D4D] flex items-center justify-center text-white"
-                  >
-                    <Play size={16} className="ml-0.5" />
-                  </button>
                 </div>
               ))}
             </div>
