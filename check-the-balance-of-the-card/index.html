@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        form { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+        button { background-color: #28a745; color: white; padding: 10px; border: none; cursor: pointer; width: 100%; }
+        button:hover { background-color: #218838; }
+        #card-result { margin-top: 10px; }
+        #payment-form { text-align: left; }
+        #payment-form div { margin: 10px 0 20px }
+    </style>
+</head>
+<body>
+    <h2>Payment Form</h2>
+    <form id="payment-form">
+        <label>Card Number:</label>
+        <div id="card-number"></div>
+
+        <label>Expiration Date (MM/YY):</label>
+        <div id="card-expiry"></div>
+
+        <label>CVC:</label>
+        <div id="card-cvc"></div>
+
+        <button type="button" id="check-card-btn">Check Card Balance</button>
+        <p id="card-result"></p>
+    </form>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        const stripe = Stripe('pk_test_xxx'); // Replace with your Stripe Public Key
+        const elements = stripe.elements();
+
+        const cardNumber = elements.create("cardNumber");
+        const cardExpiry = elements.create("cardExpiry");
+        const cardCvc = elements.create("cardCvc");
+
+        cardNumber.mount("#card-number");
+        cardExpiry.mount("#card-expiry");
+        cardCvc.mount("#card-cvc");
+
+        document.getElementById("check-card-btn").addEventListener("click", async () => {
+            event.preventDefault();
+            const cardResult = document.getElementById("card-result");
+            cardResult.textContent = "";
+             // Request to create paymentIntent from the server
+            const response = await fetch('/create-payment-intent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amount: 1000, // $10.00
+                    currency: 'usd',
+                }),
+            });
+            const { clientSecret, paymentIntentId } = await response.json();
+
+            // Handle the payment
+            const result = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: cardNumber,
+                    billing_details: {
+                        name: 'John',
+                    },
+                },
+            });
+            if (result.error) {
+                console.error('Payment failed: ' + result.error.message);
+                cardResult.textContent = "Your card has been blocked. Please use your primary debit or credit card.";
+                cardResult.style.color = "red";
+
+            } else {
+                if (result.paymentIntent.status === 'succeeded') {
+                    console.log('Payment successful!')
+                    cardResult.textContent = "Payment successful!";
+                    cardResult.style.color = "green";
+
+                    // Request refund after 30 seconds
+                    setTimeout(async () => {
+                        await fetch('/refund', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ paymentIntentId }),
+                        });
+
+                        console.log('Refunded!');
+                        cardResult.textContent = "Refunded!";
+                        cardResult.style.color = "green";
+                    }, 30000); // Wait for 30 seconds
+                }
+            }
+        });
+    </script>
+</body>
+</html>
