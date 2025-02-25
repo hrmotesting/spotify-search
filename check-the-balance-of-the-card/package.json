@@ -11,7 +11,12 @@
   "description": "",
   "dependencies": {
     "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
     "express": "^4.21.1",
+    "ioredis": "^5.5.0",
     "nodemon": "^3.1.9",
     "stripe": "^17.6.0"
   }
